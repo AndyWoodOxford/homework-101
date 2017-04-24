@@ -124,7 +124,9 @@ class Matrix(object):
         '''
         Finds missing values. Traverses the raw data for the designated missing value symbol.
         '''
-        pass
+        for i in range(self.rowcount):
+            for j in range(len(self.raw_data[i])):
+                value = self.raw_data[i][j]
 
     def interpolate(self, trace=False):
         ''' Interpolates missing values '''
@@ -133,6 +135,8 @@ class Matrix(object):
         self.find_missing_values(trace)
 
         if trace: print 'TRACE missing values: ', self.missing_values
+
+        return None
 
         for i in range(self.rowcount):
             row = self.converted[i]
