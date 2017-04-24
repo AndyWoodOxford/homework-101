@@ -25,5 +25,7 @@ Missing values are interpolated as the average of all neighbouring non-diagonal 
 There is no explicit requirement on the precision of the output matrix. Here, we have retained the precision of the values in the input file.
 
 ## Future Releases
+ * allow for missing and/or alternative missing value indicators
+ * allow option of specifying the output precision*
  * handling of adjacent missing values
- * allow option of specifying the output precision
+ *

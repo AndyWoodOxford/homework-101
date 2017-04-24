@@ -71,13 +71,35 @@ class TestMatrix(unittest.TestCase):
         self.m.validate()
         self.m.convert()
 
-    def test_convert_bad_value(self):
-        testfile = 'bad_value.csv'
+    def test_convert_unknown_symbol(self):
+        testfile = 'missing_alt_symbol.csv'
         infile = os.path.join(self.test_dir, testfile)
         try:
             self.m.read(infile)
             self.m.validate()
             self.m.convert()
+        except errors.ValidationError:
+            pass
+        else:
+            self.fail('ValidationError not raised')
+
+    def test_convert_alt_missing_value_indicator(self):
+        m = matrix.Matrix('missing')
+        testfile = 'missing_alt_symbol.csv'
+        infile = os.path.join(self.test_dir, testfile)
+        m.read(infile)
+        m.validate()
+        m.convert()
+
+    @unittest.skip('TODO fail if missing value indicator is not set')
+    def test_convert_no_missing_value_indicator(self):
+        m = matrix.Matrix()
+        testfile = 'missing_1_by_3.csv'
+        infile = os.path.join(self.test_dir, testfile)
+        m.read(infile)
+        m.validate()
+        try:
+            m.convert()
         except errors.ValidationError:
             pass
         else:

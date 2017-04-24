@@ -52,7 +52,7 @@ class Matrix(object):
         self.converted = []
         self.interpolated = []
         self.missing_designator = missing_designator
-        self.missing = []
+        self.missing_values = []
         self.rowcount = 0
         self.colcount = 0
 
@@ -97,7 +97,7 @@ class Matrix(object):
 
 
     def convert(self, trace=False):
-        ''' Converts entries to numerical values. Allows for a missing value designator '''
+        ''' Converts entries to numerical values. Handles an indicator for missing values. '''
 
         try:
             for i in range(self.rowcount):
@@ -120,13 +120,19 @@ class Matrix(object):
 
         if trace: print 'TRACE converted data: ', self.converted
 
+    def find_missing_values(self, trace=False):
+        '''
+        Finds missing values. Traverses the raw data for the designated missing value symbol.
+        '''
+        pass
+
     def interpolate(self, trace=False):
         ''' Interpolates missing values '''
 
         # identify the locations (co-ordinates) of the missing values
+        self.find_missing_values(trace)
 
-
-        if trace: print 'TRACE missing values: ', self.missing
+        if trace: print 'TRACE missing values: ', self.missing_values
 
         for i in range(self.rowcount):
             row = self.converted[i]
