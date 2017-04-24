@@ -5,6 +5,19 @@ missing values and then outputs a matrix with no missing values.
 
 The input and outputs are comma-separated files, with the former specifying missing values as 'nan'.
 
+**NB** Written against Python 2.7.11 on Mac OS.
+
+## Status
+Not operational.
+  * need to solve the identification of adjacent values
+  * fail if any neighbours of a missing value are also missing
+  * populate interpolated matrix with either the existing value, or the average of its neighbours
+  * write the interpolated matrix to the local filesystem  
+
+## Usage
+
+Run with the ''-h'' option.
+
 ## Features
 Missing values are interpolated as the average of all neighbouring non-diagonal values.
 
