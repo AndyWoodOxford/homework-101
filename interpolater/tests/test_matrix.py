@@ -13,7 +13,7 @@ class TestMatrix(unittest.TestCase):
     test_dir = os.path.join('tests', 'resources')
 
     def setUp(self):
-        self.m = matrix.Matrix()
+        self.m = matrix.Matrix('nan')
 
     # Reading the input data
     def test_no_such_file(self):
@@ -69,7 +69,7 @@ class TestMatrix(unittest.TestCase):
         infile = os.path.join(self.test_dir, testfile)
         self.m.read(infile)
         self.m.validate()
-        self.m.convert('nan')
+        self.m.convert()
 
     def test_convert_bad_value(self):
         testfile = 'bad_value.csv'
@@ -77,7 +77,7 @@ class TestMatrix(unittest.TestCase):
         try:
             self.m.read(infile)
             self.m.validate()
-            self.m.convert('nan')
+            self.m.convert()
         except errors.ValidationError:
             pass
         else:
@@ -90,6 +90,7 @@ class TestMatrix(unittest.TestCase):
         try:
             self.m.read(infile)
             self.m.validate()
+            self.m.convert()
         except errors.InterpolationError:
             pass
         else:
@@ -101,6 +102,7 @@ class TestMatrix(unittest.TestCase):
         try:
             self.m.read(infile)
             self.m.validate()
+            self.m.convert()
         except errors.InterpolationError:
             pass
         else:

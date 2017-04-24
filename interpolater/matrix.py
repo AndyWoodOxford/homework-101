@@ -46,11 +46,12 @@ class Matrix(object):
 
         return adjacent
 
-    def __init__(self):
+    def __init__(self, missing_designator = None):
         ''' Creates an empty Matrix'''
         self.raw_data = []
         self.converted = []
         self.interpolated = []
+        self.missing_designator = missing_designator
         self.missing = []
         self.rowcount = 0
         self.colcount = 0
@@ -95,7 +96,7 @@ class Matrix(object):
         if trace: print 'TRACE input matrix has {0} rows and {1} columns'.format(self.rowcount, self.colcount)
 
 
-    def convert(self, missing_designator = None, trace=False):
+    def convert(self, trace=False):
         ''' Converts entries to numerical values. Allows for a missing value designator '''
 
         try:
@@ -106,7 +107,7 @@ class Matrix(object):
                     value = self.raw_data[i][j]
 
                     # record missing values as 'nan'
-                    if missing_designator and value == missing_designator:
+                    if self.missing_designator and value == self.missing_designator:
                         if trace: print 'TRACE missing value \'{0}\'found at ({1},{2})'.format(value, i,j)
                         row_converted.append(float('nan'))
                     else:
@@ -123,6 +124,8 @@ class Matrix(object):
         ''' Interpolates missing values '''
 
         # identify the locations (co-ordinates) of the missing values
+
+
         if trace: print 'TRACE missing values: ', self.missing
 
         for i in range(self.rowcount):
