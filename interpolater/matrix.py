@@ -79,13 +79,18 @@ class Matrix(object):
         # get row count
         self.rowcount = len(self.raw_data)
 
-        # check column count is consistent over each row
-        count = 0 if self.rowcount == 0 else len(self.raw_data[0])
+        # check for empty cells and mismatched column counts
+        column_count = 0 if self.rowcount == 0 else len(self.raw_data[0])
         for row in range(1, self.rowcount):
-            count_cur = len(self.raw_data[row])
-            if count_cur != count:
-                raise errors.ValidationError('Mismatched column counts: {0}, {1}'.format(count, count_cur))
-        self.colcount = count
+            count = len(self.raw_data[row])
+            if column_count != count:
+                raise errors.ValidationError('Mismatched column counts: {0}, {1}'.format(column_count, count))
+            for col in range(count):
+                cell = self.raw_data[row][col]
+                if len(cell) == 0:
+                    raise errors.ValidationError('Empty cell at ({0},{1})'.format(row, col))
+
+        self.colcount = column_count
 
         if trace: print 'TRACE input matrix has {0} rows and {1} columns'.format(self.rowcount, self.colcount)
 
@@ -100,14 +105,12 @@ class Matrix(object):
                 for j in range(len(row)):
                     value = self.raw_data[i][j]
 
-                    # missing value - record location
-                    if self.MISSING_VALUE == value:
-                        if trace: print 'TRACE missing value found at ({0},{1})'.format(i,j)
-                        self.missing.append((i,j))
-
-                    # convert string value (including 'nan') to floating point
-                    num = float(value)
-                    row_converted.append(num)
+                    # record missing values as 'nan'
+                    if missing_designator and value == missing_designator:
+                        if trace: print 'TRACE missing value \'{0}\'found at ({1},{2})'.format(value, i,j)
+                        row_converted.append(float('nan'))
+                    else:
+                        row_converted.append(float(value))
 
                 self.converted.append(row_converted)
 
@@ -115,10 +118,13 @@ class Matrix(object):
             raise errors.ValidationError('Non-numerical value at {0}, {1}'.format(i,j))
 
         if trace: print 'TRACE converted data: ', self.converted
-        if trace: print 'TRACE missing values: ', self.missing
 
     def interpolate(self, trace=False):
         ''' Interpolates missing values '''
+
+        # identify the locations (co-ordinates) of the missing values
+        if trace: print 'TRACE missing values: ', self.missing
+
         for i in range(self.rowcount):
             row = self.converted[i]
             row_interpolated = []

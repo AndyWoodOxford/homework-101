@@ -26,7 +26,7 @@ class TestMatrix(unittest.TestCase):
         else:
             self.fail('IOError not raised')
 
-    def test_happy_case(self):
+    def test_read_happy_case(self):
         testfile = 'complete_3_by_3.csv'
         infile = os.path.join(self.test_dir, testfile)
         self.m.read(infile)
@@ -34,7 +34,7 @@ class TestMatrix(unittest.TestCase):
         self.assertEqual(self.m.get_dimensions(), (3,3))
 
     # Validating
-    def test_mismatch_column_count(self):
+    def test_validate_mismatch_column_count(self):
         testfile = 'mismatch_column_counts.csv'
         infile = os.path.join(self.test_dir, testfile)
         try:
@@ -45,15 +45,33 @@ class TestMatrix(unittest.TestCase):
         else:
             self.fail('ValidationError not raised')
 
-    def test_empty_file(self):
+    def test_validate_empty_file(self):
         testfile = 'empty.csv'
         infile = os.path.join(self.test_dir, testfile)
         self.m.read(infile)
         self.m.validate()
         self.assertEqual(self.m.get_dimensions(), (0,0))
 
+    def test_validate_empty_cell(self):
+        testfile = 'empty_cell.csv'
+        infile = os.path.join(self.test_dir, testfile)
+        try:
+            self.m.read(infile)
+            self.m.validate()
+        except errors.ValidationError:
+            pass
+        else:
+            self.fail('ValidationError not raised')
+
     # Converting
-    def test_bad_value(self):
+    def test_convert_happy_case(self):
+        testfile = 'missing_1_by_3.csv'
+        infile = os.path.join(self.test_dir, testfile)
+        self.m.read(infile)
+        self.m.validate()
+        self.m.convert('nan')
+
+    def test_convert_bad_value(self):
         testfile = 'bad_value.csv'
         infile = os.path.join(self.test_dir, testfile)
         try:
@@ -66,7 +84,7 @@ class TestMatrix(unittest.TestCase):
             self.fail('ValidationError not raised')
 
     # Interpolating
-    def test_adjacent_missing_row(self):
+    def test_interpolate_adjacent_missing_row(self):
         testfile = 'missing_adjacent_row.csv'
         infile = os.path.join(self.test_dir, testfile)
         try:
@@ -77,7 +95,7 @@ class TestMatrix(unittest.TestCase):
         else:
             self.fail('InterpolationError not raised')
 
-    def test_adjacent_missing_col(self):
+    def test_interpolate_adjacent_missing_col(self):
         testfile = 'missing_adjacent_col.csv'
         infile = os.path.join(self.test_dir, testfile)
         try:

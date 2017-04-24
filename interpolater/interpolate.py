@@ -30,7 +30,7 @@ def main():
         m.read(args.infile, trace=args.verbose)
         m.validate(trace=args.verbose)
         #m.convert(MISSING_SYMBOL, trace=args.verbose)
-        #m.interpolate(trace=args.verbose)
+        m.interpolate(trace=args.verbose)
         #m.write(args.outfile, trace=args.verbose)
     except Exception as e:
         print 'Interpolation FAILED\n\tException caught:', e
