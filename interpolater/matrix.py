@@ -55,6 +55,10 @@ class Matrix(object):
         self.rowcount = 0
         self.colcount = 0
 
+    def get_dimensions(self):
+        ''' Returns row and column count as a tuple '''
+        return (self.rowcount, self.colcount)
+
     def read(self, filename, trace=False):
         ''' Reads a 2-D matrix from a given CSV. Note that all values are read as strings.'''
 
@@ -70,30 +74,25 @@ class Matrix(object):
         if trace: print 'TRACE raw input', self.raw_data
 
     def validate(self, trace=False):
-        ''' Validates the input data. Converts string values to floating points. '''
+        ''' Validates the input data. Raises a ValidationError upon failure. '''
 
-        # get row and column counts
+        # get row count
         self.rowcount = len(self.raw_data)
 
-        # short circuit for empty matrix
-        if self.rowcount  == 0:
-            self.colcount = 0
-            return
-
         # check column count is consistent over each row
-        count_first_row = len(self.raw_data[0])
-        if self.rowcount == 1:
-            self.colcount = count_first_row
-        else:
-            for row in range(1, self.rowcount):
-                count = len(self.raw_data[row])
-                if count != count_first_row:
-                    raise errors.ValidationError('Mismatched row counts: {0}, {1}'.format(count_first_row, count))
-            self.colcount = count_first_row
+        count = 0 if self.rowcount == 0 else len(self.raw_data[0])
+        for row in range(1, self.rowcount):
+            count_cur = len(self.raw_data[row])
+            if count_cur != count:
+                raise errors.ValidationError('Mismatched column counts: {0}, {1}'.format(count, count_cur))
+        self.colcount = count
 
         if trace: print 'TRACE input matrix has {0} rows and {1} columns'.format(self.rowcount, self.colcount)
 
-        # inspect each element - convert to floating point, record missing data
+
+    def convert(self, missing_designator = None, trace=False):
+        ''' Converts entries to numerical values. Allows for a missing value designator '''
+
         try:
             for i in range(self.rowcount):
                 row = self.raw_data[i]

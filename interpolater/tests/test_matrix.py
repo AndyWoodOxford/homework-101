@@ -30,6 +30,8 @@ class TestMatrix(unittest.TestCase):
         testfile = 'complete_3_by_3.csv'
         infile = os.path.join(self.test_dir, testfile)
         self.m.read(infile)
+        self.m.validate()
+        self.assertEqual(self.m.get_dimensions(), (3,3))
 
     # Validating
     def test_mismatch_column_count(self):
@@ -43,12 +45,21 @@ class TestMatrix(unittest.TestCase):
         else:
             self.fail('ValidationError not raised')
 
+    def test_empty_file(self):
+        testfile = 'empty.csv'
+        infile = os.path.join(self.test_dir, testfile)
+        self.m.read(infile)
+        self.m.validate()
+        self.assertEqual(self.m.get_dimensions(), (0,0))
+
+    # Converting
     def test_bad_value(self):
         testfile = 'bad_value.csv'
         infile = os.path.join(self.test_dir, testfile)
         try:
             self.m.read(infile)
             self.m.validate()
+            self.m.convert('nan')
         except errors.ValidationError:
             pass
         else:
